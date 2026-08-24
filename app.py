@@ -25,7 +25,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 1. Judul Dashboard
-st.title("📦 Dashboard Analisis Waktu Pemenuhan Material Request (MR)")
+st.title(" Dashboard Analisis Waktu Pemenuhan Material Request (MR)")
 st.markdown("**PT Epsindo Jaya Pratama Workshop Duri** | *Monitoring & Evaluasi Lead Time*")
 st.markdown("---")
 
@@ -59,7 +59,7 @@ def load_data():
 df_clean = load_data()
 
 # 3. Sidebar Filter Kategori Waktu
-st.sidebar.header("⚙️ Kontrol & Filter")
+st.sidebar.header("Kontrol & Filter")
 st.sidebar.markdown("Pilih kategori waktu pemenuhan:")
 
 selected_kategori = st.sidebar.multiselect(
@@ -72,7 +72,7 @@ selected_kategori = st.sidebar.multiselect(
 filtered_df = df_clean[df_clean['Kategori'].isin(selected_kategori)]
 
 # 4. Kotak Metrik Utama (KPIs)
-st.markdown("### 📈 Ringkasan Performa")
+st.markdown("### Ringkasan Performa")
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -90,12 +90,12 @@ st.markdown("---")
 col_left, col_right = st.columns([1, 1])
 
 with col_left:
-    st.markdown("### 📊 Proporsi Kategori Waktu")
+    st.markdown("###  Proporsi Kategori Waktu")
     kategori_counts = filtered_df['Kategori'].value_counts().reindex(['Cepat', 'Standar', 'Lambat']).fillna(0)
     st.bar_chart(kategori_counts, color="#2E8B57")
 
 with col_right:
-    st.markdown("### 💡 Insight Singkat")
+    st.markdown("###  Insight Singkat")
     if len(filtered_df) > 0:
         total = len(filtered_df)
         cepat_count = len(filtered_df[filtered_df['Kategori'] == 'Cepat'])
@@ -106,12 +106,12 @@ with col_right:
         * **Evaluasi**: Perhatikan transaksi yang masuk kategori **Lambat** (> 3 hari) untuk dianalisis kendala operasionalnya di lapangan.
         """)
     else:
-        st.warning("⚠️ Tidak ada data yang sesuai dengan filter yang dipilih.")
+        st.warning(" Tidak ada data yang sesuai dengan filter yang dipilih.")
 
 st.markdown("---")
 
 # 6. Tabel Detail Data
-st.markdown("### 📋 Tabel Detail Transaksi Material Request")
+st.markdown("###  Tabel Detail Transaksi Material Request")
 st.dataframe(
     filtered_df[['Part ID', 'Description', 'Qty', 'Unit', 'MR Date', 'Tgl Penyerahan', 'Rentang_Hari', 'Kategori']], 
     use_container_width=True,
