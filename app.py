@@ -58,9 +58,6 @@ def load_data():
 
 df_clean = load_data()
 
-# 3. Sidebar Filter & Pencarian (Search Bar)
-st.sidebar.header("🔍 Navigasi & Pencarian")
-
 # Fitur Search berdasarkan Part ID atau Deskripsi / No MR
 search_query = st.sidebar.text_input("Cari Part ID / Deskripsi:", "").strip().lower()
 
