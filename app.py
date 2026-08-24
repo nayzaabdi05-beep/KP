@@ -75,7 +75,7 @@ st.sidebar.markdown("---")
 
 # B. Filter Berdasarkan Jenis Barang (Pilihan Tetap)
 st.sidebar.subheader(" Kategori Jenis Barang")
-opsi_jenis_barang = ['Semua Barang', 'Motor', 'Protector', 'Pompa', 'Intake', 'Cable', 'Umum']
+opsi_jenis_barang = ['Semua Barang', 'Motor', 'Protector', 'Pompa', 'Intake', 'Cable']
 selected_jenis = st.sidebar.selectbox("Pilih Jenis Barang:", options=opsi_jenis_barang)
 
 st.sidebar.markdown("---")
