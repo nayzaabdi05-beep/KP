@@ -54,25 +54,46 @@ def load_data():
             return 'Lambat'
             
     df_clean['Kategori'] = df_clean['Rentang_Hari'].apply(categorize_lead_time)
+    
+    # Membuat kolom Bulan (Format: Tahun-Bulan, misal: 2025-12, 2026-01)
+    df_clean['Bulan'] = df_clean['MR Date'].dt.to_period('M').astype(str)
+    
     return df_clean
 
 df_clean = load_data()
 
-# 3. Sidebar Filter Kategori Waktu
-st.sidebar.header("Kontrol & Filter")
-st.sidebar.markdown("Pilih kategori waktu pemenuhan:")
+# 3. Sidebar Filter (Bulan & Kategori)
+st.sidebar.header(" Kontrol & Filter")
+st.sidebar.markdown("Sesuaikan filter analisis data:")
 
+# A. Filter Bulan (Mengambil daftar bulan yang ada di data secara otomatis)
+daftar_bulan = sorted(df_clean['Bulan'].unique())
+# Menambahkan opsi 'Semua Bulan' di urutan paling atas
+opsi_bulan = ['Semua Bulan'] + daftar_bulan
+
+selected_bulan = st.sidebar.selectbox("Pilih Bulan (Berdasarkan MR Date):", options=opsi_bulan)
+
+st.sidebar.markdown("---")
+
+# B. Filter Kategori Waktu
 selected_kategori = st.sidebar.multiselect(
-    "Pilih Kategori:", 
+    "Pilih Kategori Waktu:", 
     options=['Cepat', 'Standar', 'Lambat'], 
     default=['Cepat', 'Standar', 'Lambat']
 )
 
-# Proses Filter Data
-filtered_df = df_clean[df_clean['Kategori'].isin(selected_kategori)]
+# 4. Proses Filter Data Berdasarkan Bulan & Kategori
+filtered_df = df_clean.copy()
 
-# 4. Kotak Metrik Utama (KPIs)
-st.markdown("### Ringkasan Performa")
+# Jika memilih bulan tertentu (bukan 'Semua Bulan')
+if selected_bulan != 'Semua Bulan':
+    filtered_df = filtered_df[filtered_df['Bulan'] == selected_bulan]
+
+# Filter berdasarkan kategori yang dicentang
+filtered_df = filtered_df[filtered_df['Kategori'].isin(selected_kategori)]
+
+# 5. Kotak Metrik Utama (KPIs)
+st.markdown(f"###  Ringkasan Performa (Periode: *{selected_bulan}*)")
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -86,7 +107,7 @@ with col3:
 
 st.markdown("---")
 
-# 5. Visualisasi Grafik & Insight
+# 6. Visualisasi Grafik & Insight
 col_left, col_right = st.columns([1, 1])
 
 with col_left:
@@ -102,15 +123,16 @@ with col_right:
         persen_cepat = (cepat_count / total) * 100 if total > 0 else 0
         
         st.info(f"""
+        * **Periode Terpilih**: Menampilkan data untuk **{selected_bulan}**.
         * **Dominasi Layanan**: Sekitar **{persen_cepat:.1f}%** dari total transaksi terpilih berhasil diselesaikan dalam kategori **Cepat** ($\le$ 1 hari).
-        * **Evaluasi**: Perhatikan transaksi yang masuk kategori **Lambat** (> 3 hari) untuk dianalisis kendala operasionalnya di lapangan.
+        * **Evaluasi**: Cek transaksi kategori **Lambat** pada periode ini untuk mengetahui kendala spesifiknya.
         """)
     else:
-        st.warning(" Tidak ada data yang sesuai dengan filter yang dipilih.")
+        st.warning(" Tidak ada data yang sesuai dengan kombinasi bulan dan kategori yang dipilih.")
 
 st.markdown("---")
 
-# 6. Tabel Detail Data
+# 7. Tabel Detail Data
 st.markdown("###  Tabel Detail Transaksi Material Request")
 st.dataframe(
     filtered_df[['Part ID', 'Description', 'Qty', 'Unit', 'MR Date', 'Tgl Penyerahan', 'Rentang_Hari', 'Kategori']], 
