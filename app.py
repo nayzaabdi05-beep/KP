@@ -62,7 +62,7 @@ def load_data():
 
 df_clean = load_data()
 
-# 3. Sidebar Filter Lengkap (Bulan, Kategori Waktu, & Filter Jenis Barang)
+# 3. Sidebar Filter Lengkap
 st.sidebar.header(" Kontrol & Filter")
 st.sidebar.markdown("Sesuaikan filter analisis data:")
 
@@ -73,19 +73,19 @@ selected_bulan = st.sidebar.selectbox("Pilih Bulan:", options=opsi_bulan)
 
 st.sidebar.markdown("---")
 
-# B. Filter Kategori Waktu
+# B. Filter Berdasarkan Jenis Barang (Pilihan Tetap)
+st.sidebar.subheader(" Kategori Jenis Barang")
+opsi_jenis_barang = ['Semua Barang', 'Motor', 'Protector', 'Pompa', 'Intake', 'Cable', 'Umum']
+selected_jenis = st.sidebar.selectbox("Pilih Jenis Barang:", options=opsi_jenis_barang)
+
+st.sidebar.markdown("---")
+
+# C. Filter Kategori Waktu
 selected_kategori = st.sidebar.multiselect(
     "Pilih Kategori Waktu:", 
     options=['Cepat', 'Standar', 'Lambat'], 
     default=['Cepat', 'Standar', 'Lambat']
 )
-
-st.sidebar.markdown("---")
-
-# C. Filter Berdasarkan Jenis Barang (Kata Kunci Deskripsi)
-st.sidebar.subheader(" Filter Jenis Barang")
-st.sidebar.markdown("Ketik (Contoh: *motor*, *protector*, *seal*, *bearing*):")
-keyword_barang = st.sidebar.text_input("Kata Kunci Deskripsi:", "").strip().lower()
 
 # 4. Proses Filter Data Bertingkat
 filtered_df = df_clean.copy()
@@ -94,17 +94,18 @@ filtered_df = df_clean.copy()
 if selected_bulan != 'Semua Bulan':
     filtered_df = filtered_df[filtered_df['Bulan'] == selected_bulan]
 
+# Filter Jenis Barang Berdasarkan Kata Kunci di Deskripsi
+if selected_jenis != 'Semua Barang':
+    # Mencari kata kunci sesuai pilihan di kolom 'Description' secara otomatis
+    filtered_df = filtered_df[
+        filtered_df['Description'].astype(str).str.lower().str.contains(selected_jenis.lower())
+    ]
+
 # Filter Kategori Waktu
 filtered_df = filtered_df[filtered_df['Kategori'].isin(selected_kategori)]
 
-# Filter Kata Kunci Deskripsi (Misal: 'motor' atau 'protector')
-if keyword_barang:
-    filtered_df = filtered_df[
-        filtered_df['Description'].astype(str).str.lower().str.contains(keyword_barang)
-    ]
-
-# 5. Kotak Metrik Utama 
-info_periode = f"Bulan: {selected_bulan}" + (f" | Kata Kunci: '{keyword_barang}'" if keyword_barang else "")
+# 5. Kotak Metrik Utama (KPIs)
+info_periode = f"Bulan: {selected_bulan} | Jenis: {selected_jenis}"
 st.markdown(f"###  Ringkasan Performa (*{info_periode}*)")
 
 col1, col2, col3 = st.columns(3)
@@ -136,12 +137,12 @@ with col_right:
         persen_cepat = (cepat_count / total) * 100 if total > 0 else 0
         
         st.info(f"""
-        * **Pencarian Barang**: {f"Menampilkan item yang mengandung kata **'{keyword_barang}'**." if keyword_barang else "Semua jenis barang ditampilkan."}
+        * **Kategori Barang**: Menampilkan item khusus untuk **{selected_jenis}**.
         * **Dominasi Layanan**: Sekitar **{persen_cepat:.1f}%** dari transaksi terpilih diselesaikan dalam kategori **Cepat** ($\le$ 1 hari).
-        * **Evaluasi**: Cek detail pada tabel untuk melihat variasi nama barang pada kategori yang dipilih.
+        * **Evaluasi**: Periksa kembali rincian data pada tabel di bawah untuk melihat performa pemenuhan barang jenis ini.
         """)
     else:
-        st.warning(" Tidak ada data yang cocok dengan kombinasi filter atau kata kunci barang tersebut.")
+        st.warning(" Tidak ada data yang cocok dengan kombinasi filter atau jenis barang tersebut pada periode ini.")
 
 st.markdown("---")
 
