@@ -84,7 +84,7 @@ st.sidebar.markdown("---")
 
 # C. Filter Berdasarkan Jenis Barang (Kata Kunci Deskripsi)
 st.sidebar.subheader(" Filter Jenis Barang")
-st.sidebar.markdown("Ketik kata kunci tertentu untuk menyaring deskripsi (Contoh: *motor*, *protector*, *seal*, *bearing*):")
+st.sidebar.markdown("Ketik (Contoh: *motor*, *protector*, *seal*, *bearing*):")
 keyword_barang = st.sidebar.text_input("Kata Kunci Deskripsi:", "").strip().lower()
 
 # 4. Proses Filter Data Bertingkat
@@ -103,7 +103,7 @@ if keyword_barang:
         filtered_df['Description'].astype(str).str.lower().str.contains(keyword_barang)
     ]
 
-# 5. Kotak Metrik Utama (KPIs)
+# 5. Kotak Metrik Utama 
 info_periode = f"Bulan: {selected_bulan}" + (f" | Kata Kunci: '{keyword_barang}'" if keyword_barang else "")
 st.markdown(f"###  Ringkasan Performa (*{info_periode}*)")
 
