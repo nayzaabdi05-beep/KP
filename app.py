@@ -25,7 +25,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 1. Judul Dashboard
-st.title(" Dashboard Analisis Waktu Pemenuhan Material Request (MR)")
+st.title("📦 Dashboard Analisis Waktu Pemenuhan Material Request (MR)")
 st.markdown("**PT Epsindo Jaya Pratama Workshop Duri** | *Monitoring & Evaluasi Lead Time*")
 st.markdown("---")
 
@@ -58,10 +58,10 @@ def load_data():
 
 df_clean = load_data()
 
-# Fitur Search berdasarkan Part ID atau Deskripsi / No MR
+# 3. Sidebar Filter Kategori Waktu
+st.sidebar.header("⚙️ Kontrol & Filter")
+st.sidebar.markdown("Pilih kategori waktu pemenuhan:")
 
-st.sidebar.markdown("---")
-st.sidebar.subheader("Filter Kategori Waktu")
 selected_kategori = st.sidebar.multiselect(
     "Pilih Kategori:", 
     options=['Cepat', 'Standar', 'Lambat'], 
@@ -71,19 +71,12 @@ selected_kategori = st.sidebar.multiselect(
 # Proses Filter Data
 filtered_df = df_clean[df_clean['Kategori'].isin(selected_kategori)]
 
-# Jika kolom pencarian diisi, saring lagi datanya berdasarkan Part ID atau Description
-if search_query:
-    filtered_df = filtered_df[
-        filtered_df['Part ID'].astype(str).str.lower().str.contains(search_query) | 
-        filtered_df['Description'].astype(str).str.lower().str.contains(search_query)
-    ]
-
 # 4. Kotak Metrik Utama (KPIs)
 st.markdown("### 📈 Ringkasan Performa")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.metric(label="Total Data Ditemukan", value=f"{len(filtered_df):,} Data")
+    st.metric(label="Total Transaksi", value=f"{len(filtered_df):,} Data")
 with col2:
     avg_hari = filtered_df['Rentang_Hari'].mean() if len(filtered_df) > 0 else 0
     st.metric(label="Rata-rata Waktu Proses", value=f"{avg_hari:.2f} Hari")
@@ -102,26 +95,23 @@ with col_left:
     st.bar_chart(kategori_counts, color="#2E8B57")
 
 with col_right:
-    st.markdown("### 💡 Status & Insight Pencarian")
-    if search_query:
-        st.success(f"Menampilkan hasil pencarian untuk kata kunci: **'{search_query}'**")
-    
+    st.markdown("### 💡 Insight Singkat")
     if len(filtered_df) > 0:
         total = len(filtered_df)
         cepat_count = len(filtered_df[filtered_df['Kategori'] == 'Cepat'])
         persen_cepat = (cepat_count / total) * 100 if total > 0 else 0
         
         st.info(f"""
-        * **Statistik Filter**: Sekitar **{persen_cepat:.1f}%** dari data terpilih masuk dalam kategori **Cepat** ($\le$ 1 hari).
-        * **Info**: Lihat kolom paling kanan pada tabel di bawah untuk melihat status kategori persis dari setiap item yang dicari.
+        * **Dominasi Layanan**: Sekitar **{persen_cepat:.1f}%** dari total transaksi terpilih berhasil diselesaikan dalam kategori **Cepat** ($\le$ 1 hari).
+        * **Evaluasi**: Perhatikan transaksi yang masuk kategori **Lambat** (> 3 hari) untuk dianalisis kendala operasionalnya di lapangan.
         """)
     else:
-        st.warning(" Tidak ada data yang cocok dengan kata kunci pencarian atau filter yang dipilih.")
+        st.warning("⚠️ Tidak ada data yang sesuai dengan filter yang dipilih.")
 
 st.markdown("---")
 
 # 6. Tabel Detail Data
-st.markdown("###  Tabel Detail Transaksi & Status Kategori")
+st.markdown("### 📋 Tabel Detail Transaksi Material Request")
 st.dataframe(
     filtered_df[['Part ID', 'Description', 'Qty', 'Unit', 'MR Date', 'Tgl Penyerahan', 'Rentang_Hari', 'Kategori']], 
     use_container_width=True,
