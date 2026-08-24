@@ -25,7 +25,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 1. Judul Dashboard
-st.title("📦 Dashboard Analisis Waktu Pemenuhan Material Request (MR)")
+st.title(" Dashboard Analisis Waktu Pemenuhan Material Request (MR)")
 st.markdown("**PT Epsindo Jaya Pratama Workshop Duri** | *Monitoring & Evaluasi Lead Time*")
 st.markdown("---")
 
@@ -59,7 +59,6 @@ def load_data():
 df_clean = load_data()
 
 # Fitur Search berdasarkan Part ID atau Deskripsi / No MR
-search_query = st.sidebar.text_input("Cari Part ID / Deskripsi:", "").strip().lower()
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("Filter Kategori Waktu")
@@ -117,12 +116,12 @@ with col_right:
         * **Info**: Lihat kolom paling kanan pada tabel di bawah untuk melihat status kategori persis dari setiap item yang dicari.
         """)
     else:
-        st.warning("⚠️ Tidak ada data yang cocok dengan kata kunci pencarian atau filter yang dipilih.")
+        st.warning(" Tidak ada data yang cocok dengan kata kunci pencarian atau filter yang dipilih.")
 
 st.markdown("---")
 
 # 6. Tabel Detail Data
-st.markdown("### 📋 Tabel Detail Transaksi & Status Kategori")
+st.markdown("###  Tabel Detail Transaksi & Status Kategori")
 st.dataframe(
     filtered_df[['Part ID', 'Description', 'Qty', 'Unit', 'MR Date', 'Tgl Penyerahan', 'Rentang_Hari', 'Kategori']], 
     use_container_width=True,
