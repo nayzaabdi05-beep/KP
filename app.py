@@ -25,24 +25,34 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 1. Judul Dashboard
-st.title(" Dashboard Analisis Waktu Pemenuhan Material Request (MR)")
+st.title("Dashboard Analisis Waktu Pemenuhan Material Request (MR)")
 st.markdown("**PT Epsindo Jaya Pratama Workshop Duri** | *Monitoring & Evaluasi Lead Time*")
 st.markdown("---")
 
-# 2. Load dan Bersihkan Data
+# 2. Load dan Bersihkan Data (Disamakan persis dengan Notebook Kerja Praktek)
 @st.cache_data
 def load_data():
     file_path = 'DES 2025- JUNI 2026_EJP.xlsx'
     df = pd.read_excel(file_path)
+    
+    # Menjadikan baris pertama sebagai header
     df.columns = df.iloc[0]
     df = df[1:].reset_index(drop=True)
     
-    df_clean = df[['Part ID', 'Description', 'Qty', 'Unit', 'MR Date', 'Tgl Penyerahan']].dropna()
+    # Memilih kolom utama
+    df_clean = df[['Part ID', 'Description', 'Qty', 'Unit', 'MR Date', 'Tgl Penyerahan']].copy()
     
+    # Menghapus baris kosong pada kolom krusial
+    df_clean = df_clean.dropna(subset=['Part ID', 'MR Date', 'Tgl Penyerahan'])
+    df_clean = df_clean.reset_index(drop=True)
+    
+    # Konversi format tanggal dengan aman
     df_clean['MR Date'] = pd.to_datetime(df_clean['MR Date'], errors='coerce')
     df_clean['Tgl Penyerahan'] = pd.to_datetime(df_clean['Tgl Penyerahan'], errors='coerce')
     df_clean = df_clean.dropna(subset=['MR Date', 'Tgl Penyerahan'])
+    df_clean = df_clean.reset_index(drop=True)
     
+    # Perhitungan Rentang Hari & Kategori
     df_clean['Rentang_Hari'] = (df_clean['Tgl Penyerahan'] - df_clean['MR Date']).dt.days
     
     def categorize_lead_time(days):
@@ -55,7 +65,7 @@ def load_data():
             
     df_clean['Kategori'] = df_clean['Rentang_Hari'].apply(categorize_lead_time)
     
-    # Kolom Bulan
+    # Kolom Bulan untuk keperluan filter
     df_clean['Bulan'] = df_clean['MR Date'].dt.to_period('M').astype(str)
     
     return df_clean
@@ -63,7 +73,7 @@ def load_data():
 df_clean = load_data()
 
 # 3. Sidebar Filter & Pencarian
-st.sidebar.header(" Navigasi & Filter")
+st.sidebar.header("Navigasi & Filter")
 st.sidebar.markdown("Sesuaikan filter data analisis:")
 
 # A. Filter Bulan
@@ -74,7 +84,7 @@ selected_bulan = st.sidebar.selectbox("Pilih Bulan (Berdasarkan MR Date):", opti
 st.sidebar.markdown("---")
 
 # B. Fitur Pencarian Part ID / Deskripsi
-st.sidebar.subheader(" Pencarian Barang")
+st.sidebar.subheader("Pencarian Barang")
 search_query = st.sidebar.text_input("Cari Part ID / Deskripsi:", "").strip().lower()
 
 st.sidebar.markdown("---")
@@ -105,7 +115,7 @@ if search_query:
 
 # 5. Kotak Metrik Utama (KPIs)
 info_label = f"Bulan: {selected_bulan}" + (f" | Pencarian: '{search_query}'" if search_query else "")
-st.markdown(f"###  Ringkasan Performa (*{info_label}*)")
+st.markdown(f"### Ringkasan Performa (*{info_label}*)")
 
 col1, col2, col3 = st.columns(3)
 
@@ -124,12 +134,12 @@ st.markdown("---")
 col_left, col_right = st.columns([1, 1])
 
 with col_left:
-    st.markdown("###  Proporsi Kategori Waktu")
+    st.markdown("### Proporsi Kategori Waktu")
     kategori_counts = filtered_df['Kategori'].value_counts().reindex(['Cepat', 'Standar', 'Lambat']).fillna(0)
     st.bar_chart(kategori_counts, color="#2E8B57")
 
 with col_right:
-    st.markdown("###  Insight & Informasi")
+    st.markdown("### Insight & Informasi")
     if search_query:
         st.success(f"Menampilkan hasil pencarian untuk kata kunci: **'{search_query}'**")
         
@@ -143,12 +153,12 @@ with col_right:
         * **Catatan**: Gunakan kotak pencarian di sidebar untuk melacak item atau nomor part spesifik secara instan.
         """)
     else:
-        st.warning(" Tidak ada data yang cocok dengan pencarian atau filter yang dipilih.")
+        st.warning("Tidak ada data yang cocok dengan pencarian atau filter yang dipilih.")
 
 st.markdown("---")
 
 # 7. Tabel Detail Data
-st.markdown("###  Tabel Detail Transaksi Material Request")
+st.markdown("### Tabel Detail Transaksi Material Request")
 st.dataframe(
     filtered_df[['Part ID', 'Description', 'Qty', 'Unit', 'MR Date', 'Tgl Penyerahan', 'Rentang_Hari', 'Kategori']], 
     use_container_width=True,
