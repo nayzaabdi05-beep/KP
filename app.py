@@ -115,7 +115,7 @@ def load_and_process_data(file_path):
 st.sidebar.title("🎛️ Panel Kontrol")
 st.sidebar.markdown("---")
 
-file_path = "DES 2025- JULI 2026_EJP.xlsx"
+file_path = "DES 2025- JUNI 2026_EJP.xlsx"
 
 try:
     df = load_and_process_data(file_path)
