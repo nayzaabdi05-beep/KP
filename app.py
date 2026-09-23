@@ -32,7 +32,7 @@ st.markdown("---")
 # 2. Load dan Bersihkan Data (Disamakan persis dengan Notebook Kerja Praktek)
 @st.cache_data
 def load_data():
-    file_path = 'DES 2025- JUNI 2026_EJP.xlsx'
+    file_path = 'DES 2025- JULI 2026_EJP.xlsx'
     df = pd.read_excel(file_path)
     
     # Menjadikan baris pertama sebagai header
