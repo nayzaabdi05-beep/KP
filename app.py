@@ -112,7 +112,7 @@ def load_and_process_data(file_path):
 # ==========================================
 # 3. SIDEBAR & NAVIGASI
 # ==========================================
-st.sidebar.title("🎛️ Panel Kontrol")
+st.sidebar.title(" Panel Kontrol")
 st.sidebar.markdown("---")
 
 file_path = "DES 2025- JUNI 2026_EJP.xlsx"
@@ -136,14 +136,14 @@ menu = st.sidebar.selectbox(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.info("💡 **Algoritma Utama:** RandomForestClassifier dengan penyeimbangan data SMOTENC.")
+st.sidebar.info(" **Algoritma Utama:** RandomForestClassifier dengan penyeimbangan data SMOTENC.")
 
 # ==========================================
 # 4. KONTEN HALAMAN UTAMA BERDASARKAN MENU
 # ==========================================
 
 if menu == "1. Overview & Data Cleaning":
-    st.title("📂 1. Import, Input & Data Cleaning")
+    st.title(" 1. Import, Input & Data Cleaning")
     st.markdown("Bagian ini menampilkan ringkasan data setelah melewati tahap pembersihan (handling missing value, konversi tanggal, filter periode Des 2025 - Jun 2026, dan validasi Qty).")
 
     col1, col2, col3 = st.columns(3)
@@ -170,7 +170,7 @@ if menu == "1. Overview & Data Cleaning":
         st.caption("Catatan: Outlier tidak dihapus secara otomatis karena nilai lead time yang panjang merepresentasikan kategori 'Lambat' yang ingin diklasifikasikan.")
 
 elif menu == "2. Exploratory Data Analysis (EDA)":
-    st.title("📈 2. Exploratory Data Analysis (EDA)")
+    st.title(" 2. Exploratory Data Analysis (EDA)")
     st.markdown("Analisis distribusi lama waktu pemenuhan material serta tren transaksi per bulan.")
 
     col1, col2 = st.columns(2)
@@ -200,7 +200,7 @@ elif menu == "2. Exploratory Data Analysis (EDA)":
         st.pyplot(fig)
 
 elif menu == "3. Pelabelan Lead Time":
-    st.title("🏷️ 3. Pelabelan Kategori Lead Time")
+    st.title(" 3. Pelabelan Kategori Lead Time")
     st.markdown("""
     Aturan Pelabelan target berdasarkan `Rentang_Hari`:
     - **Cepat**: $\\le 1$ Hari
@@ -229,7 +229,7 @@ elif menu == "3. Pelabelan Lead Time":
         st.pyplot(fig)
 
 elif menu == "4. Model Training & SMOTENC":
-    st.title("⚙️ 4. Train-Test Split & SMOTENC Pipeline")
+    st.title(" 4. Train-Test Split & SMOTENC Pipeline")
     st.markdown("Melakukan pembagian data latih dan uji (80:20 dengan stratifikasi) serta penanganan ketidakseimbangan kelas menggunakan **SMOTENC** khusus fitur campuran (kategorikal & numerik).")
 
     # Persiapan Data
@@ -266,7 +266,7 @@ elif menu == "4. Model Training & SMOTENC":
         st.subheader("Distribusi Sesudah SMOTENC (Train)")
         st.write(pd.Series(y_train_smote).value_counts())
 
-    st.subheader("📊 Perbandingan Grafik Sebelum & Sesudah SMOTENC")
+    st.subheader(" Perbandingan Grafik Sebelum & Sesudah SMOTENC")
     before = pd.Series(y_train).value_counts()
     after = pd.Series(y_train_smote).value_counts()
 
@@ -287,7 +287,7 @@ elif menu == "4. Model Training & SMOTENC":
     st.pyplot(fig)
 
 elif menu == "5. Evaluasi & Overfitting Check":
-    st.title("🏆 5. Evaluasi Random Forest & Cek Overfitting")
+    st.title(" 5. Evaluasi Random Forest & Cek Overfitting")
 
     # Proses Training & Prediksi secara otomatis untuk keperluan evaluasi
     @st.cache_resource
@@ -351,7 +351,7 @@ elif menu == "5. Evaluasi & Overfitting Check":
         st.write(f"- **Training Accuracy**: `{train_acc:.2%}`")
         st.write(f"- **Testing Accuracy**: `{test_acc:.2%}`")
         st.write(f"- **Selisih Gap**: `{selisih:.2%}`")
-        st.info("💡 **Analisis**: Terdapat gap performa antara data training dan testing yang mengindikasikan sedikit overfitting (hal ini wajar pada model Random Forest dengan SMOTE, dan perlu didiskusikan dalam laporan penelitian).")
+        st.info(" **Analisis**: Terdapat gap performa antara data training dan testing yang mengindikasikan sedikit overfitting (hal ini wajar pada model Random Forest dengan SMOTE, dan perlu didiskusikan dalam laporan penelitian).")
 
     with col_right:
         st.subheader("📉 Confusion Matrix")
@@ -367,12 +367,12 @@ elif menu == "5. Evaluasi & Overfitting Check":
         ax.set_facecolor('#1f2937')
         st.pyplot(fig)
 
-    st.subheader("📋 Classification Report")
+    st.subheader(" Classification Report")
     report_dict = classification_report(y_test, y_pred, labels=["Cepat", "Standar", "Lambat"], zero_division=0, output_dict=True)
     st.dataframe(pd.DataFrame(report_dict).transpose(), use_container_width=True)
 
 elif menu == "6. Prediksi Real-Time Mandiri":
-    st.title("🔮 6. Form Prediksi Lead Time Transaksi Baru")
+    st.title(" 6. Form Prediksi Lead Time Transaksi Baru")
     st.markdown("Masukkan parameter transaksi material di bawah ini untuk memprediksi kategori lead time secara langsung menggunakan model terlatih.")
 
     @st.cache_resource
@@ -426,7 +426,7 @@ elif menu == "6. Prediksi Real-Time Mandiri":
             probabilities = rf.predict_proba(input_encoded)[0]
 
             st.markdown("---")
-            st.subheader("✨ Hasil Prediksi Model:")
+            st.subheader(" Hasil Prediksi Model:")
             
             if prediction == "Cepat":
                 st.success(f"### Kategori Prediksi: **{prediction}** 🟢")
