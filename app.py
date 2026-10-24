@@ -15,16 +15,16 @@ st.set_page_config(
 )
 
 # --- JUDUL UTAMA ---
-st.title("📦 Dashboard Monitoring & Klasifikasi Waktu Pemenuhan Material Request")
+st.title(" Dashboard Monitoring & Klasifikasi Waktu Pemenuhan Material Request")
 st.markdown("**PT Epsindo Jaya Pratama (EJP) Workshop Duri** | Studi Kasus Algoritma *Random Forest*")
 st.markdown("---")
 
 # --- WIDGET UPLOAD FILE DI SIDEBAR (SOLUSI AMAN) ---
-st.sidebar.header("📁 Konfigurasi Dataset")
+st.sidebar.header("Konfigurasi Dataset")
 uploaded_file = st.sidebar.file_uploader("Upload file Excel (.xlsx)", type=["xlsx"])
 
 if uploaded_file is None:
-    st.info("👈 Silakan upload file dataset Excel Anda melalui tombol di sidebar sebelah kiri untuk mulai menjalankan dasbor.")
+    st.info(" Silakan upload file dataset Excel Anda melalui tombol di sidebar sebelah kiri untuk mulai menjalankan dasbor.")
 else:
     @st.cache_resource
     def load_and_train_model(file):
@@ -105,8 +105,8 @@ else:
         # =========================================================================
         # MENU 1: RINGKASAN DATA & EDA
         # =========================================================================
-        if menu == "📊 Ringkasan Data & EDA":
-            st.subheader("📊 Statistik Ringkasan Operasional Logistik")
+        if menu == " Ringkasan Data & EDA":
+            st.subheader(" Statistik Ringkasan Operasional Logistik")
             
             col1, col2, col3, col4 = st.columns(4)
             col1.metric("Total Transaksi Valid", f"{len(df_data):,} Baris")
@@ -137,8 +137,8 @@ else:
         # =========================================================================
         # MENU 2: SIMULASI PREDIKSI MODEL
         # =========================================================================
-        elif menu == "🤖 Simulasi Prediksi Model":
-            st.subheader("🤖 Form Estimasi Kategori Waktu Pemenuhan Material")
+        elif menu == " Simulasi Prediksi Model":
+            st.subheader(" Form Estimasi Kategori Waktu Pemenuhan Material")
             st.markdown("Masukkan parameter pengajuan dokumen *Material Request* (MR) di bawah ini untuk menguji prediksi kecepatan penyerahan barang:")
 
             with st.form("form_prediksi"):
@@ -154,7 +154,7 @@ else:
                     hari_mr = st.selectbox("Hari Pengajuan MR", ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'])
                     bulan_mr = st.slider("Bulan Transaksi (MR Month)", min_value=1, max_value=12, value=6)
 
-                submit_btn = st.form_submit_button("🔍 Prediksi Kategori Waktu Pemenuhan")
+                submit_btn = st.form_submit_button(" Prediksi Kategori Waktu Pemenuhan")
 
             if submit_btn:
                 mapping_hari = {'Senin':0, 'Selasa':1, 'Rabu':2, 'Kamis':3, 'Jumat':4, 'Sabtu':5, 'Minggu':6}
